@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         tv_biometric_sign_in.setOnClickListener {
+            checkBiometricStatus(biometricManager)
             if (isBiometricEnrolled) {
                 biometricPrompt.authenticate(promptInfo)
             } else {
@@ -68,7 +69,7 @@ class MainActivity : AppCompatActivity() {
                 tv_biometric_sign_in.visibility = VISIBLE
                 isBiometricEnrolled = true
             }
-            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> tv_biometric_sign_in.visibility = GONE
+            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE,
             BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> tv_biometric_sign_in.visibility =
                 GONE
             BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
