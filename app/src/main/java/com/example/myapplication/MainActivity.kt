@@ -1,6 +1,7 @@
 package com.example.myapplication
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -38,6 +39,8 @@ class MainActivity : AppCompatActivity() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
                     showToast("Success")
+
+                    startActivity(Intent(this@MainActivity, HomeActivity::class.java))
                 }
 
                 override fun onAuthenticationFailed() {
@@ -53,13 +56,20 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         tv_biometric_sign_in.setOnClickListener {
-            checkBiometricStatus(biometricManager)
-            if (isBiometricEnrolled) {
-                biometricPrompt.authenticate(promptInfo)
-            } else {
-                showToast("Please go to settings to setup Face/TouchId")
-            }
+            onBiometricClick()
+        }
 
+        iv_biometric.setOnClickListener {
+            onBiometricClick()
+        }
+    }
+
+    private fun onBiometricClick() {
+        checkBiometricStatus(biometricManager)
+        if (isBiometricEnrolled) {
+            biometricPrompt.authenticate(promptInfo)
+        } else {
+            showToast("Please go to settings to setup Face/TouchId")
         }
     }
 
@@ -67,13 +77,18 @@ class MainActivity : AppCompatActivity() {
         when (biometricManager.canAuthenticate()) {
             BiometricManager.BIOMETRIC_SUCCESS -> {
                 tv_biometric_sign_in.visibility = VISIBLE
+                iv_biometric.visibility = VISIBLE
                 isBiometricEnrolled = true
             }
             BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE,
-            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> tv_biometric_sign_in.visibility =
-                GONE
+            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
+                tv_biometric_sign_in.visibility =
+                    GONE
+                iv_biometric.visibility = GONE
+            }
             BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
                 tv_biometric_sign_in.visibility = VISIBLE
+                iv_biometric.visibility = VISIBLE
                 isBiometricEnrolled = false
             }
         }
