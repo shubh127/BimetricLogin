@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity() {
                     showToast("Success")
 
                     startActivity(Intent(this@MainActivity, HomeActivity::class.java))
+                    finish()
                 }
 
                 override fun onAuthenticationFailed() {
